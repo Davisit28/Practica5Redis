@@ -1,0 +1,33 @@
+using StackExchange.Redis;
+using System;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        string redisHost = "redis-19426.c80.us-east-1-2.ec2.redns.redis-cloud.com";
+        int redisPort = 19426;
+        string redisPassword = "j2B120OK3N5KsoxpDHu2V5ANd2SyCa7s";
+
+        ConfigurationOptions options = new ConfigurationOptions
+        {
+            EndPoints = { { redisHost, redisPort } },
+            Password = redisPassword,
+            AbortOnConnectFail = false,
+            AllowAdmin = true
+        };
+        ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(options);
+
+        IDatabase db = redis.GetDatabase();
+
+        string key = "test_key";
+        string value = "Hello, Redis!";
+
+        db.StringSet(key, value);
+
+        string retrievedValue = db.StringGet(key);
+        Console.WriteLine($"Valor recuperado de Redis: {retrievedValue}");
+
+        redis.Close();
+    }
+}
